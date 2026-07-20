@@ -1,0 +1,1 @@
+Shitty AI vibecode that thankfully just works. I'm not the best at writing code and readme, sorry. This programm just allows to you use multiple isntances of roblox, theres many tutorials how to did that through process explorer, but im lazy to did that everytime.

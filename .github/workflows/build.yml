@@ -1,0 +1,50 @@
+name: Build & Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version tag (e.g., v0.0.1)'
+        required: true
+        default: 'v0.0.1'
+      release_title:
+        description: 'Release Title'
+        required: false
+        default: 'Roblox Multi Instance Release'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+          check-latest: true
+
+      - name: Build Windows executable
+        env:
+          GOOS: windows
+          GOARCH: amd64
+        run: |
+          go build -v -trimpath -ldflags="-s -w" -o multi-instance.exe main.go
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.version }}
+          name: ${{ inputs.release_title }} (${{ inputs.version }})
+          body: |
+            Build of the Multi Instance.
+
+            _Built via GitHub Actions Run ID: ${{ github.run_id }}_
+          files: multi-instance.exe
+          draft: false
+          prerelease: false
